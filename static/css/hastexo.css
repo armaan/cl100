@@ -1,0 +1,14 @@
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal img, .reveal video, .reveal iframe {
+  display: block;
+  margin: 0 auto;
+  max-width: 95%;
+  max-height: 95%;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  text-align: center;
+}

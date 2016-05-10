@@ -1,0 +1,42 @@
+<chapter
+  display_name="Sample Chapter">
+  <sequential
+    display_name="Sample Chapter"
+    url_name="sample_chapter"
+    format="Lab"
+    graded="true">
+    <vertical
+      display_name="Sample Slides"
+      url_name="sample_slides">
+      <html
+        display_name="Sample Slides"
+        url_name="sample_slides"
+        filename="sample_slides"/>
+    </vertical>
+    <vertical
+      display_name="Sample Lab"
+      url_name="sample_lab">
+      <hastexo
+        display_name="Sample Lab"
+        url_name="sample_lab"
+        instructions_path="markdown_sample_lab.md"
+        stack_template_path="hot_lab.yaml"
+        stack_user_name="training"
+        os_auth_url="https://identity1.citycloud.com:5000/v3"
+        os_username="hastexo"
+        os_password="wa3lai2Xuxai6mee"
+        os_project_id="8ae767a4454b47eeb1d75377db277900"
+        os_region_name="Kna1"
+        os_user_domain_id="7cce9c47a7e54b7bb95f17423a45b418"
+        os_user_id="de28147b19834f449d0bc27f7e3f96c2">
+        <test>
+          #!/bin/bash
+          # Sample test
+          logins=$(last training | grep training | wc -l)
+          [ $logins -ge 1 ] || exit 1
+          exit 0
+        </test>
+      </hastexo>
+    </vertical>
+  </sequential>
+</chapter>
