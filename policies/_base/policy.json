@@ -1,5 +1,5 @@
 {
-  "course/{{ RUN }}": {
+  "course/dev": {
     "language": "en",
     "invitation_only": true,
     "start": "2016-05-01T00:00:00Z",
@@ -19,7 +19,7 @@
     "days_early_for_beta": null,
     "discussion_topics": {
       "General": {
-        "id": "i4x-cloudify-cl100-course-{{ RUN }}"
+        "id": "i4x-cloudify-cl100-course-dev"
       }
     },
     "tabs": [

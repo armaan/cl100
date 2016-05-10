@@ -26,7 +26,7 @@ incididunt ut labore et dolore magna aliqua:
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua:
 
-![image](/asset-v1:cloudify+cl100+{{ RUN }}+type@asset+block@images_course_image.png)
+![image](/asset-v1:cloudify+cl100+dev+type@asset+block@images_course_image.png)
 
 
 # End of Unit

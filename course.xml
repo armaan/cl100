@@ -1,6 +1,6 @@
 <course
   display_name="Cloudify Demo"
-  url_name="{{ RUN }}"
+  url_name="dev"
   course="cl100"
   org="cloudify">
   <chapter url_name="chapter_1"/>
