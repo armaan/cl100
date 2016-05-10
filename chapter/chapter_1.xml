@@ -1,26 +1,38 @@
 <chapter
-  display_name="Sample Chapter">
+  display_name="Introduction">
   <sequential
-    display_name="Sample Chapter"
-    url_name="sample_chapter"
+    display_name="Introduction to TOSCA"
+    url_name="tosca_introduction">
+    <vertical
+      display_name="Introduction to TOSCA Slides"
+      url_name="tosca_introduction_slides">
+      <html
+        display_name="Introduction to TOSCA Slides"
+        url_name="tosca_introduction_slides"
+        filename="tosca_introduction_slides"/>
+    </vertical>
+  </sequential>
+  <sequential
+    display_name="Introduction to Cloudify"
+    url_name="cloudify_introduction"
     format="Lab"
     graded="true">
     <vertical
-      display_name="Sample Slides"
-      url_name="sample_slides">
+      display_name="Introduction to Cloudify Slides"
+      url_name="cloudify_introduction_slides">
       <html
-        display_name="Sample Slides"
-        url_name="sample_slides"
-        filename="sample_slides"/>
+        display_name="Introduction to Cloudify Slides"
+        url_name="cloudify_introduction_slides"
+        filename="cloudify_introduction_slides"/>
     </vertical>
     <vertical
-      display_name="Sample Lab"
-      url_name="sample_lab">
+      display_name="Cloudify Introduction Lab"
+      url_name="cloudify_introduction_lab">
       <hastexo
-        display_name="Sample Lab"
-        url_name="sample_lab"
-        instructions_path="markdown_sample_lab.md"
-        stack_template_path="hot_lab.yaml"
+        display_name="Cloudify Introduction Lab"
+        url_name="cloudify_introduction_lab"
+        instructions_path="markdown_cloudify_introduction_lab.md"
+        stack_template_path="hot_sample_lab.yaml"
         stack_user_name="training"
         os_auth_url="https://identity1.citycloud.com:5000/v3"
         os_username="hastexo"
