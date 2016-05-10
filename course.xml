@@ -1,5 +1,5 @@
 <course
-  display_name="Cloudify Demo"
+  display_name="Cloudify Demo (Development)"
   url_name="dev"
   course="cl100"
   org="cloudify">
