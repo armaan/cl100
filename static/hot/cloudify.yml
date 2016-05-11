@@ -121,6 +121,8 @@ resources:
             lock-passwd: false
             shell: /bin/bash
             sudo: "ALL=(ALL) NOPASSWD:ALL"
+            ssh_authorized_keys:
+              - { get_attr: [ user_keypair, public_key ] }
             
         write_files:
           - path: /etc/hosts
@@ -136,9 +138,6 @@ resources:
               192.168.122.111 alice.example.com alice
               192.168.122.112 bob.example.com bob
               192.168.122.113 charlie.example.com charlie
-          - path: '/home/training/.ssh/id_rsa'
-            permissions: '0600'
-            content: { get_attr: [ user_keypair, private_key ] }    
 
         runcmd:
           - cp /etc/skel/.??* /home/training
