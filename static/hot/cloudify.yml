@@ -1,0 +1,255 @@
+# Heat stack to deploy 3 Centos 7 Nova guests.
+# 
+#
+# Node roles are designated as follows:
+#
+# 
+# - alice: 
+# - bob: 
+# - charlie:
+# 
+heat_template_version: 2013-05-23
+
+description: >
+  3 Centos 7 Nova VMs.
+
+parameters:
+  alice_flavor:
+    type: string
+    description: Flavor to use for deploy node
+    default: 1C-2GB
+  bob_flavor:
+    type: string
+    description: Flavor to use for controller nodes
+    default: 1C-2GB
+  charlie_flavor:
+    type: string
+    description: Flavor to use for compute nodes
+    default: 1C-2GB
+  public_net_id:
+    type: string
+    description: Public network ID
+    default: fba95253-5543-4078-b793-e2de58c31378
+  image:
+    type: string
+    description: Image ID or name
+    default: f0f394b1-5546-4b68-b2bc-8abe8a7e6b8b
+
+resources:
+  user_keypair:
+    type: OS::Nova::KeyPair
+    properties:
+      name: { get_param: "OS::stack_id" }
+      save_private_key: true
+  server_security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      description: Neutron security group rules
+      name: server_security_group
+      rules:
+      - remote_mode: 'remote_group_id'
+        remote_group_id:
+        direction: ingress
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+        port_range_min: 22
+        port_range_max: 22
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: icmp
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+        port_range_min: 80
+        port_range_max: 80
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+        port_range_min: 443
+        port_range_max: 443
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+        port_range_min: 8080
+        port_range_max: 8080
+
+  default_config:
+    type: "OS::Heat::CloudConfig"
+    properties:
+      cloud_config:
+        package_update: true
+        package_upgrade: false
+        users:
+          - default
+          - name: training
+            groups: users,adm
+            lock-passwd: false
+            shell: /bin/bash
+            sudo: "ALL=(ALL) NOPASSWD:ALL"
+            ssh_authorized_keys:
+              - { get_attr: [ user_keypair, public_key ] }
+        write_files:
+          - path: /etc/hosts
+            permissions: '0644'
+            content: |
+              127.0.0.1 localhost
+              ::1       ip6-localhost ip6-loopback
+              fe00::0   ip6-localnet
+              ff00::0   ip6-mcastprefix
+              ff02::1   ip6-allnodes
+              ff02::2   ip6-allrouters
+
+              192.168.122.111 alice.example.com alice
+              192.168.122.112 bob.example.com bob
+              192.168.122.113 charlie.example.com charlie
+
+        runcmd:
+          - cp /etc/skel/.??* /home/training
+          - chown -R training:training /home/training
+
+
+  alice_config:
+    type: "OS::Heat::CloudConfig"
+    properties:
+      cloud_config:
+        package_update: true
+        package_upgrade: false
+        users:
+          - default
+          - name: training
+            groups: users,adm
+            lock-passwd: false
+            shell: /bin/bash
+            sudo: "ALL=(ALL) NOPASSWD:ALL"
+            
+        write_files:
+          - path: /etc/hosts
+            permissions: '0644'
+            content: |
+              127.0.0.1 localhost
+              ::1       ip6-localhost ip6-loopback
+              fe00::0   ip6-localnet
+              ff00::0   ip6-mcastprefix
+              ff02::1   ip6-allnodes
+              ff02::2   ip6-allrouters
+
+              192.168.122.111 alice.example.com alice
+              192.168.122.112 bob.example.com bob
+              192.168.122.113 charlie.example.com charlie
+          - path: '/home/training/.ssh/id_rsa'
+            permissions: '0600'
+            content: { get_attr: [ user_keypair, private_key ] }    
+
+        runcmd:
+          - cp /etc/skel/.??* /home/training
+          - chown -R training:training /home/training
+  
+
+  management_net:
+    type: OS::Neutron::Net
+    properties:
+      name: management-net
+
+  management_sub_net:
+    type: OS::Neutron::Subnet
+    properties:
+      name: management-sub-net
+      network_id: { get_resource: management_net }
+      cidr: 192.168.122.0/24
+      gateway_ip: 192.168.122.1
+      enable_dhcp: true
+      allocation_pools: [{"start": "192.168.122.200", "end": "192.168.122.250"}]
+      dns_nameservers:
+        - 192.168.122.100
+        - 8.8.8.8
+        - 8.8.4.4
+
+  router:
+    type: OS::Neutron::Router
+
+  router_gateway:
+    type: OS::Neutron::RouterGateway
+    properties:
+      router_id: { get_resource: router }
+      network_id: { get_param: public_net_id }
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router }
+      subnet_id: { get_resource: management_sub_net }
+
+
+  alice:
+    type: OS::Nova::Server
+    properties:
+      name: alice
+      image: { get_param: image }
+      flavor: { get_param: alice_flavor }
+      user_data: { get_resource: alice_config }
+      user_data_format: RAW
+      networks:
+        - port: { get_resource: alice_management_port }
+
+  alice_management_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: management_net }
+      security_groups:
+        - { get_resource: server_security_group }
+      fixed_ips:
+        - ip_address: 192.168.122.111
+
+  alice_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: { get_param: public_net_id }
+      port_id: { get_resource: alice_management_port }
+
+  bob:
+    type: OS::Nova::Server
+    properties:
+      name: bob
+      image: { get_param: image }
+      flavor: { get_param: bob_flavor }
+      user_data: { get_resource: default_config }
+      user_data_format: RAW
+      networks:
+        - port: { get_resource: bob_management_port }
+
+  bob_management_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: management_net }
+      security_groups:
+        - { get_resource: server_security_group }
+      fixed_ips:
+        - ip_address: 192.168.122.112
+
+  charlie:
+    type: OS::Nova::Server
+    properties:
+      name: charlie
+      image: { get_param: image }
+      flavor: { get_param: charlie_flavor }
+      user_data: { get_resource: default_config }
+      user_data_format: RAW
+      networks:
+        - port: { get_resource: charlie_management_port }
+
+  charlie_management_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: { get_resource: management_net }
+      security_groups:
+        - { get_resource: server_security_group }
+      fixed_ips:
+        - ip_address: 192.168.122.113
+
+outputs:
+  public_ip:
+    description: Floating IP address of deploy host in public network
+    value: { get_attr: [ alice_floating_ip, floating_ip_address ] }
+  private_key:
+    description: Training private key
+    value: { get_attr: [ user_keypair, private_key ] }
