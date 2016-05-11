@@ -32,7 +32,7 @@
         display_name="Cloudify Introduction Lab"
         url_name="cloudify_introduction_lab"
         instructions_path="markdown_cloudify_introduction_lab.md"
-        stack_template_path="hot_sample_lab.yaml"
+        stack_template_path="hot_cloudify.yaml"
         stack_user_name="training"
         os_auth_url="https://identity1.citycloud.com:5000/v3"
         os_username="hastexo"
