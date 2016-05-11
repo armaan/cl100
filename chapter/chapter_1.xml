@@ -2,7 +2,9 @@
   display_name="Introduction">
   <sequential
     display_name="Introduction to TOSCA"
-    url_name="tosca_introduction">
+    url_name="tosca_introduction"
+    format="Lab"
+    graded="true">
     <vertical
       display_name="Introduction to TOSCA Slides"
       url_name="tosca_introduction_slides">
@@ -10,6 +12,48 @@
         display_name="Introduction to TOSCA Slides"
         url_name="tosca_introduction_slides"
         filename="tosca_introduction_slides"/>
+    </vertical>
+    <vertical
+      display_name="Introduction to TOSCA Lab"
+      url_name="tosca_introduction_lab">
+      <hastexo
+        display_name="Introduction to TOSCA Lab"
+        url_name="tosca_introduction_lab"
+        instructions_path="markdown_tosca_introduction_lab.md"
+        stack_template_path="hot_cloudify.yaml"
+        stack_user_name="training"
+        os_auth_url="https://identity1.citycloud.com:5000/v3"
+        os_username="hastexo"
+        os_password="wa3lai2Xuxai6mee"
+        os_project_id="8ae767a4454b47eeb1d75377db277900"
+        os_region_name="Kna1"
+        os_user_domain_id="7cce9c47a7e54b7bb95f17423a45b418"
+        os_user_id="de28147b19834f449d0bc27f7e3f96c2">
+        <test>
+          #!/bin/bash
+          logins=$(last training | grep training | wc -l)
+          [ $logins -ge 1 ] || exit 1
+          exit 0
+        </test>
+        <test>
+          #!/bin/bash
+          logins=$(ssh alice last training | grep training | wc -l)
+          [ $logins -ge 1 ] || exit 1
+          exit 0
+        </test>
+        <test>
+          #!/bin/bash
+          logins=$(ssh bob last training | grep training | wc -l)
+          [ $logins -ge 1 ] || exit 1
+          exit 0
+        </test>
+        <test>
+          #!/bin/bash
+          logins=$(ssh charlie last training | grep training | wc -l)
+          [ $logins -ge 1 ] || exit 1
+          exit 0
+        </test>
+      </hastexo>
     </vertical>
   </sequential>
   <sequential
@@ -26,10 +70,10 @@
         filename="cloudify_introduction_slides"/>
     </vertical>
     <vertical
-      display_name="Cloudify Introduction Lab"
+      display_name="Introduction to Cloudify Lab"
       url_name="cloudify_introduction_lab">
       <hastexo
-        display_name="Cloudify Introduction Lab"
+        display_name="Introduction to Cloudify Lab"
         url_name="cloudify_introduction_lab"
         instructions_path="markdown_cloudify_introduction_lab.md"
         stack_template_path="hot_cloudify.yaml"
@@ -40,15 +84,7 @@
         os_project_id="8ae767a4454b47eeb1d75377db277900"
         os_region_name="Kna1"
         os_user_domain_id="7cce9c47a7e54b7bb95f17423a45b418"
-        os_user_id="de28147b19834f449d0bc27f7e3f96c2">
-        <test>
-          #!/bin/bash
-          # Sample test
-          logins=$(last training | grep training | wc -l)
-          [ $logins -ge 1 ] || exit 1
-          exit 0
-        </test>
-      </hastexo>
+        os_user_id="de28147b19834f449d0bc27f7e3f96c2"/>
     </vertical>
   </sequential>
 </chapter>
